@@ -38,5 +38,10 @@
 /QT/TekAutoTest/release
 /QT/TekAutoTest/x64
 /QT/.vs
+/QT/TekAutoTest/debug
+/QT/TekAutoTest/.vs
 /VisaSamples
+*.user
+*.filters
+.qmake.stash
 
