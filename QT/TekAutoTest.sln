@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2041
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TekAutoTest", "TekAutoTest\TekAutoTest.vcxproj", "{D17D3269-02E0-3786-81DB-C0E0E5E6782E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D17D3269-02E0-3786-81DB-C0E0E5E6782E}.Debug|x64.ActiveCfg = Debug|x64
+		{D17D3269-02E0-3786-81DB-C0E0E5E6782E}.Debug|x64.Build.0 = Debug|x64
+		{D17D3269-02E0-3786-81DB-C0E0E5E6782E}.Release|x64.ActiveCfg = Release|x64
+		{D17D3269-02E0-3786-81DB-C0E0E5E6782E}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {14120BBF-801F-4E50-A19B-A9D880350000}
+	EndGlobalSection
+EndGlobal
