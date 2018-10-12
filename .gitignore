@@ -25,8 +25,17 @@
 *.la
 *.a
 *.lib
+!tkVisa32.lib
+!Visa32.lib
+!visa64.lib
 
 # Executables
 *.exe
 *.out
 *.app
+
+/QT/TekAutoTest/GeneratedFiles
+QT/TekAutoTest/release
+QT/TekAutoTest/x64
+QT/.vs
+
