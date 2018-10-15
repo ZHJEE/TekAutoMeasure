@@ -7,7 +7,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-	//mgenmodule.openSession();
 }
 
 MainWindow::~MainWindow()
@@ -17,5 +16,5 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-printf("aaaa");
+
 }

@@ -42,6 +42,5 @@
 /QT/TekAutoTest/.vs
 /VisaSamples
 *.user
-*.filters
 .qmake.stash
 

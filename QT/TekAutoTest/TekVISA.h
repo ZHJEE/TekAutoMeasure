@@ -7,11 +7,13 @@
 #include <sstream>
 #include "visa.h"
 #include "visatype.h"
+#include <QWidget>
 
-class genModule
+class tekVisa : public QWidget
 {
+	Q_OBJECT
 public:
-    genModule();
+	explicit tekVisa(QWidget *parent);
 
         bool openSession();
         //bool closeSession();
