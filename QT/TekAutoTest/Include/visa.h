@@ -1,24 +1,40 @@
 /*---------------------------------------------------------------------------*/
-/* Distributed by the IVI Foundation                                         */
-/*                                                                           */
+/* Distributed by IVI Foundation Inc.                                        */
+/* Contains National Instruments extensions.                                 */
 /* Do not modify the contents of this file.                                  */
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
 /* Title   : VISA.H                                                          */
-/* Date    : 06-18-2012                                                      */
-/* Purpose : Include file for the VISA Library 5.1 specification             */
+/* Date    : 06-08-2017                                                      */
+/* Purpose : Include file for the VISA Library 5.8 specification             */
 /*                                                                           */
+/*---------------------------------------------------------------------------*/
+/* When using NI-VISA extensions, you must link with the VISA library that   */
+/* comes with NI-VISA.  Currently, the extensions provided by NI-VISA are:   */
+/*                                                                           */
+/* PXI (Compact PCI eXtensions for Instrumentation) and PCI support.  To use */
+/* this, you must define the macro NIVISA_PXI before including this header.  */
+/* You must also create an INF file with the VISA Driver Development Wizard. */
+/*                                                                           */
+/* A fast set of macros for viPeekXX/viPokeXX that guarantees binary         */
+/* compatibility with other implementations of VISA.  To use this, you must  */
+/* define the macro NIVISA_PEEKPOKE before including this header.            */
+/*                                                                           */
+/* Support for USB devices that do not conform to a specific class.  To use  */
+/* this, you must define the macro NIVISA_USB before including this header.  */
+/* You must also create an INF file with the VISA Driver Development Wizard. */
 /*---------------------------------------------------------------------------*/
 
 #ifndef __VISA_HEADER__
 #define __VISA_HEADER__
 
 #include <stdarg.h>
+
 #if !defined(__VISATYPE_HEADER__)
 #include "visatype.h"
 #endif
 
-#define VI_SPEC_VERSION     (0x00500100UL)
+#define VI_SPEC_VERSION     (0x00500800UL)
 
 #if defined(__cplusplus) || defined(__cplusplus__)
    extern "C" {
@@ -29,6 +45,7 @@
 #endif
 
 /*- VISA Types --------------------------------------------------------------*/
+
 typedef ViObject             ViEvent;
 typedef ViEvent      _VI_PTR ViPEvent;
 typedef ViObject             ViFindList;
@@ -57,6 +74,7 @@ typedef ViAttr       _VI_PTR ViPAttr;
 typedef ViAttr       _VI_PTR ViAAttr;
 
 typedef ViString             ViKeyId;
+typedef ViConstString        ViConstKeyId;
 typedef ViPString            ViPKeyId;
 typedef ViUInt32             ViJobId;
 typedef ViJobId      _VI_PTR ViPJobId;
@@ -73,18 +91,16 @@ typedef ViStatus (_VI_FUNCH _VI_PTR ViHndlr)
 /*- Resource Manager Functions and Operations -------------------------------*/
 
 ViStatus _VI_FUNC  viOpenDefaultRM (ViPSession vi);
-
-ViStatus _VI_FUNC  viFindRsrc      (ViSession sesn, ViString expr, ViPFindList vi,
+ViStatus _VI_FUNC  viFindRsrc      (ViSession sesn, ViConstString expr, ViPFindList vi,
                                     ViPUInt32 retCnt, ViChar _VI_FAR desc[]);
 ViStatus _VI_FUNC  viFindNext      (ViFindList vi, ViChar _VI_FAR desc[]);
-
-ViStatus _VI_FUNC  viParseRsrc     (ViSession rmSesn, ViRsrc rsrcName,
+ViStatus _VI_FUNC  viParseRsrc     (ViSession rmSesn, ViConstRsrc rsrcName,
                                     ViPUInt16 intfType, ViPUInt16 intfNum);
-ViStatus _VI_FUNC  viParseRsrcEx   (ViSession rmSesn, ViRsrc rsrcName, ViPUInt16 intfType,
+ViStatus _VI_FUNC  viParseRsrcEx   (ViSession rmSesn, ViConstRsrc rsrcName, ViPUInt16 intfType,
                                     ViPUInt16 intfNum, ViChar _VI_FAR rsrcClass[],
                                     ViChar _VI_FAR expandedUnaliasedName[],
                                     ViChar _VI_FAR aliasIfExists[]);
-ViStatus _VI_FUNC  viOpen          (ViSession sesn, ViRsrc name, ViAccessMode mode,
+ViStatus _VI_FUNC  viOpen          (ViSession sesn, ViConstRsrc name, ViAccessMode mode,
                                     ViUInt32 timeout, ViPSession vi);
 
 /*- Resource Template Operations --------------------------------------------*/
@@ -96,7 +112,7 @@ ViStatus _VI_FUNC  viStatusDesc    (ViObject vi, ViStatus status, ViChar _VI_FAR
 ViStatus _VI_FUNC  viTerminate     (ViObject vi, ViUInt16 degree, ViJobId jobId);
 
 ViStatus _VI_FUNC  viLock          (ViSession vi, ViAccessMode lockType, ViUInt32 timeout,
-                                    ViKeyId requestedKey, ViChar _VI_FAR accessKey[]);
+                                    ViConstKeyId requestedKey, ViChar _VI_FAR accessKey[]);
 ViStatus _VI_FUNC  viUnlock        (ViSession vi);
 ViStatus _VI_FUNC  viEnableEvent   (ViSession vi, ViEventType eventType, ViUInt16 mechanism,
                                     ViEventFilter context);
@@ -115,8 +131,8 @@ ViStatus _VI_FUNC  viRead          (ViSession vi, ViPBuf buf, ViUInt32 cnt, ViPU
 ViStatus _VI_FUNC  viReadAsync     (ViSession vi, ViPBuf buf, ViUInt32 cnt, ViPJobId  jobId);
 ViStatus _VI_FUNC  viReadToFile    (ViSession vi, ViConstString filename, ViUInt32 cnt,
                                     ViPUInt32 retCnt);
-ViStatus _VI_FUNC  viWrite         (ViSession vi, ViBuf  buf, ViUInt32 cnt, ViPUInt32 retCnt);
-ViStatus _VI_FUNC  viWriteAsync    (ViSession vi, ViBuf  buf, ViUInt32 cnt, ViPJobId  jobId);
+ViStatus _VI_FUNC  viWrite         (ViSession vi, ViConstBuf  buf, ViUInt32 cnt, ViPUInt32 retCnt);
+ViStatus _VI_FUNC  viWriteAsync    (ViSession vi, ViConstBuf  buf, ViUInt32 cnt, ViPJobId  jobId);
 ViStatus _VI_FUNC  viWriteFromFile (ViSession vi, ViConstString filename, ViUInt32 cnt,
                                     ViPUInt32 retCnt);
 ViStatus _VI_FUNC  viAssertTrigger (ViSession vi, ViUInt16 protocol);
@@ -128,21 +144,23 @@ ViStatus _VI_FUNC  viClear         (ViSession vi);
 ViStatus _VI_FUNC  viSetBuf        (ViSession vi, ViUInt16 mask, ViUInt32 size);
 ViStatus _VI_FUNC  viFlush         (ViSession vi, ViUInt16 mask);
 
-ViStatus _VI_FUNC  viBufWrite      (ViSession vi, ViBuf  buf, ViUInt32 cnt, ViPUInt32 retCnt);
+ViStatus _VI_FUNC  viBufWrite      (ViSession vi, ViConstBuf  buf, ViUInt32 cnt, ViPUInt32 retCnt);
 ViStatus _VI_FUNC  viBufRead       (ViSession vi, ViPBuf buf, ViUInt32 cnt, ViPUInt32 retCnt);
 
-ViStatus _VI_FUNCC viPrintf        (ViSession vi, ViString writeFmt, ...);
-ViStatus _VI_FUNC  viVPrintf       (ViSession vi, ViString writeFmt, ViVAList params);
-ViStatus _VI_FUNCC viSPrintf       (ViSession vi, ViPBuf buf, ViString writeFmt, ...);
-ViStatus _VI_FUNC  viVSPrintf      (ViSession vi, ViPBuf buf, ViString writeFmt,
+ViStatus _VI_FUNCC viPrintf        (ViSession vi, ViConstString writeFmt, ...);
+ViStatus _VI_FUNC  viVPrintf       (ViSession vi, ViConstString writeFmt, ViVAList params);
+ViStatus _VI_FUNCC viSPrintf       (ViSession vi, ViBuf buf, ViConstString writeFmt, ...);
+ViStatus _VI_FUNC  viVSPrintf      (ViSession vi, ViBuf buf, ViConstString writeFmt,
                                     ViVAList parms);
-ViStatus _VI_FUNCC viScanf         (ViSession vi, ViString readFmt, ...);
-ViStatus _VI_FUNC  viVScanf        (ViSession vi, ViString readFmt, ViVAList params);
-ViStatus _VI_FUNCC viSScanf        (ViSession vi, ViBuf buf, ViString readFmt, ...);
-ViStatus _VI_FUNC  viVSScanf       (ViSession vi, ViBuf buf, ViString readFmt,
+
+ViStatus _VI_FUNCC viScanf         (ViSession vi, ViConstString readFmt, ...);
+ViStatus _VI_FUNC  viVScanf        (ViSession vi, ViConstString readFmt, ViVAList params);
+ViStatus _VI_FUNCC viSScanf        (ViSession vi, ViConstBuf buf, ViConstString readFmt, ...);
+ViStatus _VI_FUNC  viVSScanf       (ViSession vi, ViConstBuf buf, ViConstString readFmt,
                                     ViVAList parms);
-ViStatus _VI_FUNCC viQueryf        (ViSession vi, ViString writeFmt, ViString readFmt, ...);
-ViStatus _VI_FUNC  viVQueryf       (ViSession vi, ViString writeFmt, ViString readFmt,
+
+ViStatus _VI_FUNCC viQueryf        (ViSession vi, ViConstString writeFmt, ViConstString readFmt, ...);
+ViStatus _VI_FUNC  viVQueryf       (ViSession vi, ViConstString writeFmt, ViConstString readFmt,
                                     ViVAList params);
 
 /*- Memory I/O Operations ---------------------------------------------------*/
@@ -279,7 +297,7 @@ ViStatus _VI_FUNC  viMemFreeEx     (ViSession vi, ViBusAddress64 offset);
 ViStatus _VI_FUNC  viGpibControlREN(ViSession vi, ViUInt16 mode);
 ViStatus _VI_FUNC  viGpibControlATN(ViSession vi, ViUInt16 mode);
 ViStatus _VI_FUNC  viGpibSendIFC   (ViSession vi);
-ViStatus _VI_FUNC  viGpibCommand   (ViSession vi, ViBuf cmd, ViUInt32 cnt, ViPUInt32 retCnt);
+ViStatus _VI_FUNC  viGpibCommand   (ViSession vi, ViConstBuf cmd, ViUInt32 cnt, ViPUInt32 retCnt);
 ViStatus _VI_FUNC  viGpibPassControl(ViSession vi, ViUInt16 primAddr, ViUInt16 secAddr);
 
 ViStatus _VI_FUNC  viVxiCommandQuery(ViSession vi, ViUInt16 mode, ViUInt32 cmd,
@@ -291,13 +309,12 @@ ViStatus _VI_FUNC  viMapTrigger    (ViSession vi, ViInt16 trigSrc, ViInt16 trigD
 ViStatus _VI_FUNC  viUnmapTrigger  (ViSession vi, ViInt16 trigSrc, ViInt16 trigDest);
 ViStatus _VI_FUNC  viUsbControlOut (ViSession vi, ViInt16 bmRequestType, ViInt16 bRequest,
                                     ViUInt16 wValue, ViUInt16 wIndex, ViUInt16 wLength,
-                                    ViBuf buf);
+                                    ViConstBuf buf);
 ViStatus _VI_FUNC  viUsbControlIn  (ViSession vi, ViInt16 bmRequestType, ViInt16 bRequest,
                                     ViUInt16 wValue, ViUInt16 wIndex, ViUInt16 wLength,
                                     ViPBuf buf, ViPUInt16 retCnt);
 ViStatus _VI_FUNC  viPxiReserveTriggers(ViSession vi, ViInt16 cnt, ViAInt16 trigBuses,
                                     ViAInt16 trigLines, ViPInt16 failureIndex);
-
 
 /*- Attributes (platform independent size) ----------------------------------*/
 
@@ -483,6 +500,7 @@ ViStatus _VI_FUNC  viPxiReserveTriggers(ViSession vi, ViInt16 cnt, ViAInt16 trig
 #define VI_ATTR_USER_DATA                     (VI_ATTR_USER_DATA_32)
 #define VI_ATTR_RET_COUNT                     (VI_ATTR_RET_COUNT_32)
 #endif
+
 #if defined(_VI_INT64_UINT64_DEFINED)
 #define VI_ATTR_WIN_BASE_ADDR_64              (0x3FFF009BUL)
 #define VI_ATTR_WIN_SIZE_64                   (0x3FFF009CUL)
@@ -589,6 +607,7 @@ ViStatus _VI_FUNC  viPxiReserveTriggers(ViSession vi, ViInt16 cnt, ViAInt16 trig
 #define VI_ERROR_HNDLR_NINSTALLED   (_VI_ERROR+0x3FFF0028L) /* BFFF0028, -1073807320 */
 #define VI_ERROR_INV_HNDLR_REF      (_VI_ERROR+0x3FFF0029L) /* BFFF0029, -1073807319 */
 #define VI_ERROR_INV_CONTEXT        (_VI_ERROR+0x3FFF002AL) /* BFFF002A, -1073807318 */
+#define VI_ERROR_QUEUE_OVERFLOW     (_VI_ERROR+0x3FFF002DL) /* BFFF002D, -1073807315 */
 #define VI_ERROR_NENABLED           (_VI_ERROR+0x3FFF002FL) /* BFFF002F, -1073807313 */
 #define VI_ERROR_ABORT              (_VI_ERROR+0x3FFF0030L) /* BFFF0030, -1073807312 */
 #define VI_ERROR_RAW_WR_PROT_VIOL   (_VI_ERROR+0x3FFF0034L) /* BFFF0034, -1073807308 */
@@ -605,6 +624,7 @@ ViStatus _VI_FUNC  viPxiReserveTriggers(ViSession vi, ViInt16 cnt, ViAInt16 trig
 #define VI_ERROR_INV_FMT            (_VI_ERROR+0x3FFF003FL) /* BFFF003F, -1073807297 */
 #define VI_ERROR_NSUP_FMT           (_VI_ERROR+0x3FFF0041L) /* BFFF0041, -1073807295 */
 #define VI_ERROR_LINE_IN_USE        (_VI_ERROR+0x3FFF0042L) /* BFFF0042, -1073807294 */
+#define VI_ERROR_LINE_NRESERVED     (_VI_ERROR+0x3FFF0043L) /* BFFF0043, -1073807293 */
 #define VI_ERROR_NSUP_MODE          (_VI_ERROR+0x3FFF0046L) /* BFFF0046, -1073807290 */
 #define VI_ERROR_SRQ_NOCCURRED      (_VI_ERROR+0x3FFF004AL) /* BFFF004A, -1073807286 */
 #define VI_ERROR_INV_SPACE          (_VI_ERROR+0x3FFF004EL) /* BFFF004E, -1073807282 */
@@ -645,6 +665,7 @@ ViStatus _VI_FUNC  viPxiReserveTriggers(ViSession vi, ViInt16 cnt, ViAInt16 trig
 #define VI_ERROR_NSUP_MECH          (_VI_ERROR+0x3FFF00A4L) /* BFFF00A4, -1073807196 */
 #define VI_ERROR_INTF_NUM_NCONFIG   (_VI_ERROR+0x3FFF00A5L) /* BFFF00A5, -1073807195 */
 #define VI_ERROR_CONN_LOST          (_VI_ERROR+0x3FFF00A6L) /* BFFF00A6, -1073807194 */
+#define VI_ERROR_MACHINE_NAVAIL     (_VI_ERROR+0x3FFF00A7L) /* BFFF00A7, -1073807193 */
 #define VI_ERROR_NPERMISSION        (_VI_ERROR+0x3FFF00A8L) /* BFFF00A8, -1073807192 */
 
 /*- Other VISA Definitions --------------------------------------------------*/
@@ -733,6 +754,10 @@ ViStatus _VI_FUNC  viPxiReserveTriggers(ViSession vi, ViInt16 cnt, ViAInt16 trig
 #define VI_TRIG_STAR_VXI0           (29)
 #define VI_TRIG_STAR_VXI1           (30)
 #define VI_TRIG_STAR_VXI2           (31)
+#define VI_TRIG_TTL8                (32)
+#define VI_TRIG_TTL9                (33)
+#define VI_TRIG_TTL10               (34)
+#define VI_TRIG_TTL11               (35)
 
 #define VI_TRIG_PROT_DEFAULT        (0)
 #define VI_TRIG_PROT_ON             (1)
@@ -757,6 +782,7 @@ ViStatus _VI_FUNC  viPxiReserveTriggers(ViSession vi, ViInt16 cnt, ViAInt16 trig
 #define VI_NMAPPED                  (1)
 #define VI_USE_OPERS                (2)
 #define VI_DEREF_ADDR               (3)
+#define VI_DEREF_ADDR_BYTE_SWAP     (4)
 
 #define VI_TMO_IMMEDIATE            (0L)
 #define VI_TMO_INFINITE             (0xFFFFFFFFUL)
@@ -868,6 +894,8 @@ ViStatus _VI_FUNC  viPxiReserveTriggers(ViSession vi, ViInt16 cnt, ViAInt16 trig
 
 #define VI_TRIG_UNKNOWN             (-1)
 
+#define VI_PXI_LBUS_UNKNOWN         (-1)
+#define VI_PXI_LBUS_NONE            (0)
 #define VI_PXI_LBUS_STAR_TRIG_BUS_0 (1000)
 #define VI_PXI_LBUS_STAR_TRIG_BUS_1 (1001)
 #define VI_PXI_LBUS_STAR_TRIG_BUS_2 (1002)
@@ -880,7 +908,7 @@ ViStatus _VI_FUNC  viPxiReserveTriggers(ViSession vi, ViInt16 cnt, ViAInt16 trig
 #define VI_PXI_LBUS_STAR_TRIG_BUS_9 (1009)
 #define VI_PXI_STAR_TRIG_CONTROLLER (1413)
 
-/*- Backward Compatibility Macros -----------------------------------------*/
+/*- Backward Compatibility Macros -------------------------------------------*/
 
 #define viGetDefaultRM(vi)          viOpenDefaultRM(vi)
 #define VI_ERROR_INV_SESSION        (VI_ERROR_INV_OBJECT)
@@ -893,6 +921,222 @@ ViStatus _VI_FUNC  viPxiReserveTriggers(ViSession vi, ViInt16 cnt, ViAInt16 trig
 #define VI_ASRL_OUT_BUF             (VI_IO_OUT_BUF)
 #define VI_ASRL_IN_BUF_DISCARD      (VI_IO_IN_BUF_DISCARD)
 #define VI_ASRL_OUT_BUF_DISCARD     (VI_IO_OUT_BUF_DISCARD)
+
+/*- National Instruments ----------------------------------------------------*/
+
+#if defined(_CVI_DEBUG_)
+#pragma soft_reference (viGetAttribute);
+#endif
+
+#define VI_ERROR_HW_NGENUINE        (_VI_ERROR+0x3FFF00AAL) /* BFFF00AA, -1073807190 */
+
+#define VI_INTF_RIO                 (8)
+#define VI_INTF_FIREWIRE            (9)
+
+#define VI_ATTR_SYNC_MXI_ALLOW_EN   (0x3FFF0161UL) /* ViBoolean, read/write */
+
+/* This is for VXI SERVANT resources */
+
+#define VI_EVENT_VXI_DEV_CMD        (0xBFFF200FUL)
+#define VI_ATTR_VXI_DEV_CMD_TYPE    (0x3FFF4037UL) /* ViInt16, read-only */
+#define VI_ATTR_VXI_DEV_CMD_VALUE   (0x3FFF4038UL) /* ViUInt32, read-only */
+
+#define VI_VXI_DEV_CMD_TYPE_16      (16)
+#define VI_VXI_DEV_CMD_TYPE_32      (32)
+
+ViStatus _VI_FUNC viVxiServantResponse(ViSession vi, ViInt16 mode, ViUInt32 resp);
+/* mode values include VI_VXI_RESP16, VI_VXI_RESP32, and the next 2 values */
+#define VI_VXI_RESP_NONE            (0)
+#define VI_VXI_RESP_PROT_ERROR      (-1)
+
+/* This is for VXI TTL Trigger routing */
+
+#define VI_ATTR_VXI_TRIG_LINES_EN   (0x3FFF4043UL)
+#define VI_ATTR_VXI_TRIG_DIR        (0x3FFF4044UL)
+
+/* This allows extended Serial support on Win32 and on NI ENET Serial products */
+
+#define VI_ATTR_ASRL_DISCARD_NULL   (0x3FFF00B0UL)
+#define VI_ATTR_ASRL_CONNECTED      (0x3FFF01BBUL)
+#define VI_ATTR_ASRL_BREAK_STATE    (0x3FFF01BCUL)
+#define VI_ATTR_ASRL_BREAK_LEN      (0x3FFF01BDUL)
+#define VI_ATTR_ASRL_ALLOW_TRANSMIT (0x3FFF01BEUL)
+#define VI_ATTR_ASRL_WIRE_MODE      (0x3FFF01BFUL)
+
+#define VI_ASRL_WIRE_485_4          (0)
+#define VI_ASRL_WIRE_485_2_DTR_ECHO (1)
+#define VI_ASRL_WIRE_485_2_DTR_CTRL (2)
+#define VI_ASRL_WIRE_485_2_AUTO     (3)
+#define VI_ASRL_WIRE_232_DTE        (128)
+#define VI_ASRL_WIRE_232_DCE        (129)
+#define VI_ASRL_WIRE_232_AUTO       (130)
+
+#define VI_EVENT_ASRL_BREAK         (0x3FFF2023UL)
+#define VI_EVENT_ASRL_CTS           (0x3FFF2029UL)
+#define VI_EVENT_ASRL_DSR           (0x3FFF202AUL)
+#define VI_EVENT_ASRL_DCD           (0x3FFF202CUL)
+#define VI_EVENT_ASRL_RI            (0x3FFF202EUL)
+#define VI_EVENT_ASRL_CHAR          (0x3FFF2035UL)
+#define VI_EVENT_ASRL_TERMCHAR      (0x3FFF2024UL)
+
+/* This is for fast viPeek/viPoke macros */
+
+#if defined(NIVISA_PEEKPOKE)
+
+#if defined(NIVISA_PEEKPOKE_SUPP)
+#undef NIVISA_PEEKPOKE_SUPP
+#endif
+
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__)) && !defined(_NI_mswin16_)
+/* This macro is supported for all Win32 compilers, including CVI. */
+#define NIVISA_PEEKPOKE_SUPP
+#elif (defined(_WINDOWS) || defined(_Windows)) && !defined(_CVI_) && !defined(_NI_mswin16_)
+/* This macro is supported for Borland and Microsoft compilers on Win16, but not CVI. */
+#define NIVISA_PEEKPOKE_SUPP
+#elif defined(_CVI_) && defined(_NI_sparc_)
+/* This macro is supported for Solaris 1 and 2, from CVI only. */
+#define NIVISA_PEEKPOKE_SUPP
+#else
+/* This macro is not supported on other platforms. */
+#endif
+
+#if defined(NIVISA_PEEKPOKE_SUPP)
+
+extern ViBoolean NI_viImplVISA1;
+ViStatus _VI_FUNC NI_viOpenDefaultRM (ViPSession vi);
+#define viOpenDefaultRM(vi) NI_viOpenDefaultRM(vi)
+
+#define viPeek8(vi,addr,val)                                                \
+   {                                                                        \
+      if ((NI_viImplVISA1) && (*((ViPUInt32)(vi))))                         \
+      {                                                                     \
+         do (*((ViPUInt8)(val)) = *((volatile ViUInt8 _VI_PTR)(addr)));     \
+         while (**((volatile ViUInt8 _VI_PTR _VI_PTR)(vi)) & 0x10);         \
+      }                                                                     \
+      else                                                                  \
+      {                                                                     \
+         (viPeek8)((vi),(addr),(val));                                      \
+      }                                                                     \
+   }
+
+#define viPoke8(vi,addr,val)                                                \
+   {                                                                        \
+      if ((NI_viImplVISA1) && (*((ViPUInt32)(vi))))                         \
+      {                                                                     \
+         do (*((volatile ViUInt8 _VI_PTR)(addr)) = ((ViUInt8)(val)));       \
+         while (**((volatile ViUInt8 _VI_PTR _VI_PTR)(vi)) & 0x10);         \
+      }                                                                     \
+      else                                                                  \
+      {                                                                     \
+         (viPoke8)((vi),(addr),(val));                                      \
+      }                                                                     \
+   }
+
+#define viPeek16(vi,addr,val)                                               \
+   {                                                                        \
+      if ((NI_viImplVISA1) && (*((ViPUInt32)(vi))))                         \
+      {                                                                     \
+         do (*((ViPUInt16)(val)) = *((volatile ViUInt16 _VI_PTR)(addr)));   \
+         while (**((volatile ViUInt8 _VI_PTR _VI_PTR)(vi)) & 0x10);         \
+      }                                                                     \
+      else                                                                  \
+      {                                                                     \
+         (viPeek16)((vi),(addr),(val));                                     \
+      }                                                                     \
+   }
+
+#define viPoke16(vi,addr,val)                                               \
+   {                                                                        \
+      if ((NI_viImplVISA1) && (*((ViPUInt32)(vi))))                         \
+      {                                                                     \
+         do (*((volatile ViUInt16 _VI_PTR)(addr)) = ((ViUInt16)(val)));     \
+         while (**((volatile ViUInt8 _VI_PTR _VI_PTR)(vi)) & 0x10);         \
+      }                                                                     \
+      else                                                                  \
+      {                                                                     \
+         (viPoke16)((vi),(addr),(val));                                     \
+      }                                                                     \
+   }
+
+#define viPeek32(vi,addr,val)                                               \
+   {                                                                        \
+      if ((NI_viImplVISA1) && (*((ViPUInt32)(vi))))                         \
+      {                                                                     \
+         do (*((ViPUInt32)(val)) = *((volatile ViUInt32 _VI_PTR)(addr)));   \
+         while (**((volatile ViUInt8 _VI_PTR _VI_PTR)(vi)) & 0x10);         \
+      }                                                                     \
+      else                                                                  \
+      {                                                                     \
+         (viPeek32)((vi),(addr),(val));                                     \
+      }                                                                     \
+   }
+
+#define viPoke32(vi,addr,val)                                               \
+   {                                                                        \
+      if ((NI_viImplVISA1) && (*((ViPUInt32)(vi))))                         \
+      {                                                                     \
+         do (*((volatile ViUInt32 _VI_PTR)(addr)) = ((ViUInt32)(val)));     \
+         while (**((volatile ViUInt8 _VI_PTR _VI_PTR)(vi)) & 0x10);         \
+      }                                                                     \
+      else                                                                  \
+      {                                                                     \
+         (viPoke32)((vi),(addr),(val));                                     \
+      }                                                                     \
+   }
+
+#endif
+
+#endif
+
+#if defined(NIVISA_PXI) || defined(PXISAVISA_PXI)
+
+#if 0
+/* The following 2 attributes were incorrectly implemented in earlier
+   versions of NI-VISA.  You should now query VI_ATTR_MANF_ID or
+   VI_ATTR_MODEL_CODE.  Those attributes contain sub-vendor information
+   when it exists.  To get both the actual primary and subvendor codes
+   from the device, you should call viIn16 using VI_PXI_CFG_SPACE. */
+#define VI_ATTR_PXI_SUB_MANF_ID     (0x3FFF0203UL)
+#define VI_ATTR_PXI_SUB_MODEL_CODE  (0x3FFF0204UL)
+#endif
+
+#define VI_ATTR_PXI_USE_PREALLOC_POOL  (0x3FFF020FUL)
+#endif
+
+#if defined(NIVISA_USB)
+
+#define VI_ATTR_USB_BULK_OUT_PIPE   (0x3FFF01A2UL)
+#define VI_ATTR_USB_BULK_IN_PIPE    (0x3FFF01A3UL)
+#define VI_ATTR_USB_INTR_IN_PIPE    (0x3FFF01A4UL)
+#define VI_ATTR_USB_CLASS           (0x3FFF01A5UL)
+#define VI_ATTR_USB_SUBCLASS        (0x3FFF01A6UL)
+#define VI_ATTR_USB_ALT_SETTING     (0x3FFF01A8UL)
+#define VI_ATTR_USB_END_IN          (0x3FFF01A9UL)
+#define VI_ATTR_USB_NUM_INTFCS      (0x3FFF01AAUL)
+#define VI_ATTR_USB_NUM_PIPES       (0x3FFF01ABUL)
+#define VI_ATTR_USB_BULK_OUT_STATUS (0x3FFF01ACUL)
+#define VI_ATTR_USB_BULK_IN_STATUS  (0x3FFF01ADUL)
+#define VI_ATTR_USB_INTR_IN_STATUS  (0x3FFF01AEUL)
+#define VI_ATTR_USB_CTRL_PIPE       (0x3FFF01B0UL)
+
+#define VI_USB_PIPE_STATE_UNKNOWN   (-1)
+#define VI_USB_PIPE_READY           (0)
+#define VI_USB_PIPE_STALLED         (1)
+
+#define VI_USB_END_NONE             (0)
+#define VI_USB_END_SHORT            (4)
+#define VI_USB_END_SHORT_OR_COUNT   (5)
+
+#endif
+
+#define VI_ATTR_FIREWIRE_DEST_UPPER_OFFSET (0x3FFF01F0UL)
+#define VI_ATTR_FIREWIRE_SRC_UPPER_OFFSET  (0x3FFF01F1UL)
+#define VI_ATTR_FIREWIRE_WIN_UPPER_OFFSET  (0x3FFF01F2UL)
+#define VI_ATTR_FIREWIRE_VENDOR_ID         (0x3FFF01F3UL)
+#define VI_ATTR_FIREWIRE_LOWER_CHIP_ID     (0x3FFF01F4UL)
+#define VI_ATTR_FIREWIRE_UPPER_CHIP_ID     (0x3FFF01F5UL)
+
+#define VI_FIREWIRE_DFLT_SPACE           (5)
 
 #if defined(__cplusplus) || defined(__cplusplus__)
    }

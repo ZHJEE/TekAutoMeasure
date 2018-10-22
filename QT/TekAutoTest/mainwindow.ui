@@ -27,11 +27,11 @@
      <string>连接设备</string>
     </property>
    </widget>
-   <widget class="QTextBrowser" name="textBrowser">
+   <widget class="QListWidget" name="listWidget">
     <property name="geometry">
      <rect>
-      <x>80</x>
-      <y>20</y>
+      <x>50</x>
+      <y>10</y>
       <width>256</width>
       <height>192</height>
      </rect>
