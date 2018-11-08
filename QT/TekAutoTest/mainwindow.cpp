@@ -65,7 +65,8 @@ void MainWindow::on_pushButton_clicked()
 
 }
 
-double* ReadWaveform(ViSession vi, long* elements) {
+double* ReadWaveform(ViSession vi, long* elements) 
+{
 	ViStatus	status;
 	float		yoffset, ymult;
 	ViChar		buffer[256];
